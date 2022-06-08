@@ -6,7 +6,13 @@
   "scripts": {
     "start": "nodemon app.js",
     "test": "cross-env jest --testTimeout=10000 --detectOpenHandles",
-    "eslint": "eslint src"
+    "eslint": "eslint src",
+    "postinstall": "husky install"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npx eslint --fix"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +28,9 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "^8.17.0",
+    "husky": "^8.0.1",
     "jest": "^28.1.1",
+    "lint-staged": "^13.0.0",
     "supertest": "^6.2.3"
   }
 }
