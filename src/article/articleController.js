@@ -26,7 +26,7 @@ module.exports = {
     },
     
     _delete: function _delete(req, res) {
-        articleService.delete(req.params.id)
+        articleService.delete(req.params.id, req.body)
             .then(() => res.json({ message: 'Article deleted' }))
             .catch((err) => {
                 res.status(500).send(err);

@@ -13,8 +13,8 @@ async function getById(id) {
 }
 
 async function create(params) {
-    if (findArticleByTitle(params.Title)) {
-        throw 'Article already existed this title';
+    if (await findArticleByTitle(params.Title)) {
+        throw ({ message: 'Article already existed this title' });
     }
 
     const article = new Article(params);
@@ -24,33 +24,37 @@ async function create(params) {
 }
 
 async function update(id, params) {
-    if (params.Title && await findArticleByTitle(params.Title)) {
-        throw 'Article already existed this title';
+    if (await findArticleByTitle(params.Title)) {
+        throw ({ message: 'Article already existed this title' });
     }
+
     const article = await getArticle(id);
 
     if (params.UserId !== article.UserId) {
-        throw 'Cannot update Article of another User'
+        throw ({ message: 'Cannot update Article of another User' });
     }
 
     Object.assign(article, params);
     await article.save();
 }
 
-async function _delete(id) {
+async function _delete(id, params) {
     const article = await getArticle(id);
+    if (article.UserId !== params.UserId) {
+        throw ({ message: 'Cannot delete Article of another User' });
+    }
+
     await article.destroy();
 }
 
 async function getArticle(id) {
     const item = await Article.findByPk(id);
-    if (!item) throw 'Not found';
+    if (!item) throw ({ message: 'Article not found' });
     return item;
 }
 
 async function getAllArticleByUserId(userId) {
     const item = await Article.findAll({ where: { UserId: userId } });
-    if (item.length == 0) throw 'No article for User'
     return item;
 }
 
