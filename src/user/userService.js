@@ -1,5 +1,5 @@
-const bcrypt = require('bcryptjs');
-const { User } = require('../models');
+const bcrypt = require("bcryptjs");
+const { User } = require("../models");
 
 module.exports = {
     getAll,
@@ -7,7 +7,7 @@ module.exports = {
     create,
     update,
     delete: _delete,
-    getUser
+    getUser,
 };
 
 async function getAll() {
@@ -21,23 +21,23 @@ async function getById(id) {
 async function create(params) {
     const user = await findUserByUserName(params.username);
     if (user) {
-        throw ({ message: 'Username is already registered' });
+        throw { message: "Username is already registered" };
     }
     await User.create({
         UserName: params.username,
-        Password: await bcrypt.hash(params.password, 10)
-    })
+        Password: await bcrypt.hash(params.password, 10),
+    });
 }
 
 async function update(id, params) {
     const user = await getUser(id);
     const match = await bcrypt.compare(params.password, user.Password);
     if (match) {
-        throw ({ message: 'New and Old password cannot be same' });
+        throw { message: "New and Old password cannot be same" };
     }
 
     await user.update({
-        Password: await bcrypt.hash(params.password, 10)
+        Password: await bcrypt.hash(params.password, 10),
     });
 }
 
@@ -48,19 +48,10 @@ async function _delete(id) {
 
 async function getUser(id) {
     const user = await User.findByPk(id);
-    if (!user) throw ({ message: 'User not found' });
+    if (!user) throw { message: "User not found" };
     return user;
 }
 
 async function findUserByUserName(username) {
     return await User.findOne({ where: { UserName: username } });
 }
-
-
-
-
-
-
-
-
-
