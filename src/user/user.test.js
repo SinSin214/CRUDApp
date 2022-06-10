@@ -4,8 +4,8 @@ const request = require("supertest");
 let datetime = Date.now().toString();
 
 describe("GET /user", () => {
-  it("should show all users", async () => {
-        const res = await request(app).get("/users")
+    it("should show all users", async () => {
+        const res = await request(app).get("/users");
         expect(res.type).toEqual(expect.stringContaining("json"));
     });
 });
@@ -30,7 +30,7 @@ describe("GET /user/:id", () => {
 describe("POST /user", () => {
     it("should return that existed username", async () => {
         const res = await request(app).post("/users").send({
-            username: "User_1654745415352",
+            username: "User_165474541535",
             password: "1234",
         });
         expect(res.status).toEqual(500);
