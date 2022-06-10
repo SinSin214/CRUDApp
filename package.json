@@ -6,8 +6,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "cross-env jest --testTimeout=10000 --forceExit",
-    "eslint": "eslint src",
-    "postinstall": "husky install"
+    "eslint": "eslint src"
   },
   "lint-staged": {
     "*.js": [

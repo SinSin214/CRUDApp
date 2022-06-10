@@ -6,8 +6,6 @@ let datetime = Date.now().toString();
 describe('GET /user', () => {
     test('should show all users', async () => {
         const res = await request(app).get('/users');
-
-        expect(res.status).toEqual(200);
         expect(res.type).toEqual(expect.stringContaining('json'));
     });
 });
@@ -46,7 +44,8 @@ describe('POST /user', () => {
                 username: "User_" + datetime,
                 password: "1234"
             });
-
+            
+        
         expect(res.status).toEqual(200);
         expect(res.body.message).toEqual('User created');
     })
