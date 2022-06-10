@@ -30,7 +30,7 @@ describe("GET /user/:id", () => {
 describe("POST /user", () => {
     it("should return that existed username", async () => {
         const res = await request(app).post("/users").send({
-            username: "User_165474541535",
+            username: "User_1654745415352",
             password: "1234",
         });
         expect(res.status).toEqual(500);
