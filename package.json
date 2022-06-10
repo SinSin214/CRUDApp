@@ -11,7 +11,8 @@
     },
     "lint-staged": {
         "*.js": [
-            "npx eslint --fix"
+            "npx eslint --fix",
+            "npm run pretty"
         ]
     },
     "jest": {
