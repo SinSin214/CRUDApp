@@ -1,13 +1,11 @@
-const app = require("../../app");
-const request = require("supertest");
+const app = require("../../../app");
+const request = require("supertest")(app);
 
 let datetime = Date.now().toString();
 
 describe("GET /comment/getAllCommentOfArticle/:articleId", () => {
     test("should show all users", async () => {
-        const res = await request(app).get(
-            "/comments/getAllCommentOfArticle/1"
-        );
+        const res = await request.get("/comments/getAllCommentOfArticle/1");
 
         expect(res.status).toEqual(200);
         expect(res.type).toEqual(expect.stringContaining("json"));
@@ -23,9 +21,7 @@ describe("GET /comment/getAllCommentOfArticle/:articleId", () => {
     });
 
     test("should show all users", async () => {
-        const res = await request(app).get(
-            "/comments/getAllCommentOfArticle/10"
-        );
+        const res = await request.get("/comments/getAllCommentOfArticle/10");
 
         expect(res.status).toEqual(200);
         expect(res.type).toEqual(expect.stringContaining("json"));
@@ -35,7 +31,7 @@ describe("GET /comment/getAllCommentOfArticle/:articleId", () => {
 
 describe("POST /comments", () => {
     it("should success", async () => {
-        const res = await request(app).post("/comments").send({
+        const res = await request.post("/comments").send({
             Content: "Comment",
             UserId: 1,
             ArticleId: 1,
@@ -47,23 +43,19 @@ describe("POST /comments", () => {
 
 describe("PUT /comments/:id", () => {
     it("should update comment successfully", async () => {
-        const res = await request(app)
-            .put("/comments/1")
-            .send({
-                Content: "Comment_" + datetime,
-                UserId: 1,
-            });
+        const res = await request.put("/comments/1").send({
+            Content: "Comment_" + datetime,
+            UserId: 1,
+        });
         expect(res.status).toEqual(200);
         expect(res.body.message).toEqual("Comment updated");
     });
 
     it("should update comment successfully", async () => {
-        const res = await request(app)
-            .put("/comments/1")
-            .send({
-                Content: "Comment_" + datetime,
-                UserId: 2,
-            });
+        const res = await request.put("/comments/1").send({
+            Content: "Comment_" + datetime,
+            UserId: 2,
+        });
         expect(res.status).toEqual(500);
         expect(res.body.message).toEqual("You can only update your Comment");
     });
@@ -71,7 +63,7 @@ describe("PUT /comments/:id", () => {
 
 describe("DELETE /comments/:id", () => {
     it("should delete comment successfully", async () => {
-        const res = await request(app).delete("/comments/2").send({
+        const res = await request.delete("/comments/2").send({
             UserId: 1,
         });
 
@@ -80,7 +72,7 @@ describe("DELETE /comments/:id", () => {
     });
 
     it("should not delete", async () => {
-        const res = await request(app).delete("/comments/1").send({
+        const res = await request.delete("/comments/1").send({
             UserId: 10,
         });
 

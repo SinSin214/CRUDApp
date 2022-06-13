@@ -7,10 +7,16 @@ const sequelize = new Sequelize(database, user, password, {
     port,
     dialect: "mysql",
     logging: false,
+    query: {
+        raw: true,
+    },
 });
 
+sequelize.sync();
+
 module.exports = {
-    User: require("./userModel")(sequelize),
-    Article: require("./articleModel")(sequelize),
-    Comment: require("./commentModel")(sequelize),
+    User: require("./user.model")(sequelize),
+    Article: require("./article.model")(sequelize),
+    Comment: require("./comment.model")(sequelize),
+    Role: require("./role.model")(sequelize),
 };

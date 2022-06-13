@@ -1,4 +1,4 @@
-const commentService = require("./commentService");
+const commentService = require("./comment.service");
 
 module.exports = {
     create: function create(req, res, next) {

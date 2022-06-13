@@ -1,48 +1,48 @@
-const articleService = require("./articleService");
+const articleService = require("./article.service");
 
 module.exports = {
-    getById: function getById(req, res) {
+    getById: function getById(req, res, next) {
         articleService
             .getById(req.params.id)
             .then((item) => res.json(item))
             .catch((err) => {
-                res.status(500).send(err);
+                next(err);
             });
     },
 
-    create: function create(req, res) {
+    create: function create(req, res, next) {
         articleService
             .create(req.body)
             .then(() => res.json({ message: "Article created" }))
             .catch((err) => {
-                res.status(500).send(err);
+                next(err);
             });
     },
 
-    update: function update(req, res) {
+    update: function update(req, res, next) {
         articleService
             .update(req.params.id, req.body)
             .then(() => res.json({ message: "Article updated" }))
             .catch((err) => {
-                res.status(500).send(err);
+                next(err);
             });
     },
 
-    _delete: function _delete(req, res) {
+    _delete: function _delete(req, res, next) {
         articleService
             .delete(req.params.id, req.body)
             .then(() => res.json({ message: "Article deleted" }))
             .catch((err) => {
-                res.status(500).send(err);
+                next(err);
             });
     },
 
-    getAllArticleByUserId: function getAllArticleByUserId(req, res) {
+    getAllArticleByUserId: function getAllArticleByUserId(req, res, next) {
         articleService
             .getAllArticleByUserId(req.body.UserId)
             .then((item) => res.json(item))
             .catch((err) => {
-                res.status(500).send(err);
+                next(err);
             });
     },
 };

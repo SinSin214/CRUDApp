@@ -9,5 +9,16 @@
     "parserOptions": {
         "ecmaVersion": "latest"
     },
-    "rules": {}
+    "rules": {
+        "no-console": "warn",
+        "no-debugger": "warn",
+        "no-empty": "warn",
+        "no-extra-semi": "warn",
+        "no-dupe-args": "error",
+        "no-dupe-keys": "error",
+        "no-alert": "error",
+        "no-loop-func": "error",
+        "no-multi-spaces": "warn",
+        "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
+    }
 }

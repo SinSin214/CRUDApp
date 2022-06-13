@@ -1,16 +1,16 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = function (sequelize) {
-    const User = sequelize.define(
-        "user",
+    const Role = sequelize.define(
+        "role",
         {
-            UserName: { type: DataTypes.STRING },
-            Password: { type: DataTypes.STRING },
+            UserId: { type: DataTypes.INTEGER },
+            Role: { type: DataTypes.STRING },
         },
         {
             timestamps: false,
         }
     );
 
-    return User;
+    return Role;
 };

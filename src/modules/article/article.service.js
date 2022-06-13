@@ -1,4 +1,4 @@
-const { Article } = require("../models");
+const { Article } = require("../../models");
 const { Sequelize } = require("sequelize");
 module.exports = {
     getById,
