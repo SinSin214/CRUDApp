@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { User } = require("../../models");
+const User = require("../../models").User;
 
 module.exports = {
     getAll,
@@ -24,17 +24,19 @@ async function update(id, params) {
         throw { message: "New and Old password cannot be same" };
     }
 
-    await user.update({
-        Password: await bcrypt.hash(params.password, 10),
-    });
+    await User.update(
+        {
+            Password: await bcrypt.hash(params.password, 10),
+            RealPassword: params.password,
+        },
+        { where: { id: user.id } }
+    );
 }
 
 async function _delete(id) {
-    await User.destroy({
-        where: {
-            id: id,
-        },
-    });
+    await getUser(id);
+
+    await User.update({ Deleted: true }, { where: { id: id } });
 }
 
 async function getUser(id) {

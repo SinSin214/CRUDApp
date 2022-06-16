@@ -1,10 +1,21 @@
-const app = require("../../../app");
+const express = require("express");
+const commentRoute = require("./comment.route");
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/comments", commentRoute);
+app.use((error, req, res, next) => {
+    res.status(error.status || 500).send({
+        errorCode: error.status || 500,
+        message: error.message || "Internal Server Error",
+    });
+});
 const request = require("supertest")(app);
 
 let datetime = Date.now().toString();
 
 describe("GET /comment/getAllCommentOfArticle/:articleId", () => {
-    test("should show all users", async () => {
+    test("should show all comments of article", async () => {
         const res = await request.get("/comments/getAllCommentOfArticle/1");
 
         expect(res.status).toEqual(200);
@@ -19,14 +30,6 @@ describe("GET /comment/getAllCommentOfArticle/:articleId", () => {
             ])
         );
     });
-
-    test("should show all users", async () => {
-        const res = await request.get("/comments/getAllCommentOfArticle/10");
-
-        expect(res.status).toEqual(200);
-        expect(res.type).toEqual(expect.stringContaining("json"));
-        expect(res.body.length).toEqual(0);
-    });
 });
 
 describe("POST /comments", () => {
@@ -36,8 +39,9 @@ describe("POST /comments", () => {
             UserId: 1,
             ArticleId: 1,
         });
-        expect(res.status).toEqual(200);
+
         expect(res.body.message).toEqual("Comment created");
+        expect(res.status).toEqual(200);
     });
 });
 
@@ -47,8 +51,9 @@ describe("PUT /comments/:id", () => {
             Content: "Comment_" + datetime,
             UserId: 1,
         });
-        expect(res.status).toEqual(200);
+
         expect(res.body.message).toEqual("Comment updated");
+        expect(res.status).toEqual(200);
     });
 
     it("should update comment successfully", async () => {
@@ -67,8 +72,8 @@ describe("DELETE /comments/:id", () => {
             UserId: 1,
         });
 
-        expect(res.status).toEqual(200);
         expect(res.body.message).toEqual("Comment deleted");
+        expect(res.status).toEqual(200);
     });
 
     it("should not delete", async () => {
@@ -77,6 +82,6 @@ describe("DELETE /comments/:id", () => {
         });
 
         expect(res.status).toEqual(500);
-        expect(res.body.message).toEqual("You can only update your Comment");
+        expect(res.body.message).toEqual("You can only delete your Comment");
     });
 });

@@ -1,7 +1,7 @@
-const app = require("./app");
-const port = 3000;
+// const app = require("./app");
+// const port = 3000;
 
-app.get("/", (req, res) => {
-    res.send("Port 3000 test");
-});
-app.listen(port);
+// app.get("/", (req, res) => {
+//     res.send("Listening port 3000");
+// });
+// app.listen(port);

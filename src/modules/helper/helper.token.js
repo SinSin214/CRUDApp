@@ -21,14 +21,4 @@ module.exports = {
             throw { message: `Error in verify access token: ${error}` };
         }
     },
-
-    decodeToken: (token) => {
-        try {
-            return jwt.verify(token, config.secret, {
-                ignoreExpiration: true,
-            });
-        } catch (error) {
-            throw { message: `Error in decode access token: ${error}` };
-        }
-    },
 };

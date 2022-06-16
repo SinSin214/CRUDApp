@@ -6,7 +6,7 @@ module.exports = {
         //get UserName from Token and check if admin
         try {
             let token = req.headers["authorization"].split(" ")[1];
-            let decoded = helper.decodeToken(token);
+            let decoded = helper.verifyToken(token);
             await authorizationService.checkAdmin(decoded.UserId);
             next();
         } catch (err) {
