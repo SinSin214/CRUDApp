@@ -1,24 +1,31 @@
-const app = require("../../../app");
+const express = require("express");
+const userRoute = require("./user.route");
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/users", userRoute);
+app.use((error, req, res, next) => {
+    res.status(error.status || 500).send({
+        errorCode: error.status || 500,
+        message: error.message || "Internal Server Error",
+    });
+});
 const request = require("supertest")(app);
+const constant = require("../../static/constant");
 
-// let datetime = Date.now().toString();
+let datetime = Date.now().toString();
+let token = constant.TOKEN;
 
-// describe("GET /user", () => {
-//     it("should show all users", async () => {
-//         const res = await request.get("/users");
-//         expect(res.type).toEqual(expect.stringContaining("json"));
-//     });
-// });
+describe("GET /user", () => {
+    it("should show all users", async () => {
+        const res = await request.get("/users");
+        expect(res.type).toEqual(expect.stringContaining("json"));
+    });
+});
 
 describe("GET /user/:id", () => {
     it("should show user info based on Id", async () => {
-        const res = await request
-            .get("/users/4")
-            .set(
-                "Authorization",
-                "Bearer " +
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjQsImlhdCI6MTY1NTA4ODA1OCwiZXhwIjoxNjU1MTc0NDU4fQ.I-1G4z2YyLD-lzW6KSSIDvpbPTOkzY5Vv61Ct0vLua8"
-            );
+        const res = await request.get("/users/4");
 
         expect(res.status).toEqual(200);
         expect(res.type).toEqual(expect.stringContaining("json"));
@@ -26,84 +33,49 @@ describe("GET /user/:id", () => {
     });
 
     it("should not found user", async () => {
-        const res = await request
-            .get("/users/1000")
-            .set(
-                "Authorization",
-                "Bearer " +
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjQsImlhdCI6MTY1NTA4ODA1OCwiZXhwIjoxNjU1MTc0NDU4fQ.I-1G4z2YyLD-lzW6KSSIDvpbPTOkzY5Vv61Ct0vLua8"
-            );
-        expect(res.body.ErrorCode).toEqual(500);
-        expect(res.body.Message).toEqual("User not found");
-    });
+        const res = await request.get("/users/1000");
 
-    it("wrong token", async () => {
-        const res = await request
-            .get("/users/4")
-            .set(
-                "Authorization",
-                "Bearer " +
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjQsImlhdCI6MTY1NTA4ODA1OCwiZXhwIjoxNjU1MTc0NDU4fQ.I-1G4z2YyLD-lzW6KSSIDvpbPTOkzY5Vv61Ct0vLua"
-            );
-
-        expect(res.body.ErrorCode).toEqual(500);
+        expect(res.status).toEqual(500);
+        expect(res.body.message).toEqual("User not found");
     });
 });
 
-// describe("POST /user", () => {
-//     it("should return that existed username", async () => {
-//         const res = await request.post("/users").send({
-//             username: "User_1654745415352",
-//             password: "1234",
-//         });
-//         expect(res.status).toEqual(500);
-//         expect(res.body.message).toEqual("Username is already registered");
-//     });
+describe("PUT /user/:id", () => {
+    it("should update user successfully", async () => {
+        const res = await request.put("/users/4").send({
+            password: "" + datetime,
+        });
 
-//     it("should create user successfully", async () => {
-//         const res = await request
-//             .post("/users")
-//             .send({
-//                 username: "User_" + datetime,
-//                 password: "1234",
-//             });
+        expect(res.body.message).toEqual("User updated");
+        expect(res.status).toEqual(200);
+    });
 
-//         expect(res.status).toEqual(200);
-//         expect(res.body.message).toEqual("User created");
-//     });
-// });
+    it("should return that Old and New password is the same", async () => {
+        const res = await request.put("/users/6").send({
+            password: "abcd",
+        });
 
-// describe("PUT /user/:id", () => {
-//     it("should update user successfully", async () => {
-//         const res = await request.put("/users/22").send({
-//             password: datetime,
-//         });
-//         expect(res.status).toEqual(200);
-//         expect(res.body.message).toEqual("User updated");
-//     });
+        expect(res.body.message).toEqual("New and Old password cannot be same");
+        expect(res.status).toEqual(500);
+    });
+});
 
-//     it("should return that Old and New password is the same", async () => {
-//         const res = await request.put("/users/23").send({
-//             password: "1234",
-//         });
+describe("DELETE /user", () => {
+    it("should delete user successfully", async () => {
+        const res = await request
+            .delete("/users/7")
+            .set("Authorization", "Bearer " + token);
 
-//         expect(res.status).toEqual(500);
-//         expect(res.body.message).toEqual("New and Old password cannot be same");
-//     });
-// });
+        expect(res.status).toEqual(200);
+        expect(res.body.message).toEqual("User deleted");
+    });
 
-// describe("DELETE /user", () => {
-//     it("should delete user successfully", async () => {
-//         const res = await request.delete("/users/26");
+    it("should not found user", async () => {
+        const res = await request
+            .delete("/users/1000")
+            .set("Authorization", "Bearer " + token);
 
-//         expect(res.status).toEqual(200);
-//         expect(res.body.message).toEqual("User deleted");
-//     });
-
-//     it("should not found user", async () => {
-//         const res = await request.delete("/users/1000");
-
-//         expect(res.status).toEqual(500);
-//         expect(res.body.message).toEqual("User not found");
-//     });
-// });
+        expect(res.body.message).toEqual("User not found");
+        expect(res.status).toEqual(500);
+    });
+});

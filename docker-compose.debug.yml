@@ -1,8 +1,21 @@
 version: '3.4'
 
 services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: "schematesting_2"
+      MYSQL_USER: "username"
+      MYSQL_PASSWORD: "password"
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
   nodejs:
     image: nodejs
+    depends_on:
+      - mysql
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,4 +23,9 @@ services:
       NODE_ENV: development
     ports:
       - 3000:3000
-      - 9229:9229
+  #   networks:
+  #     - default
+
+networks:
+    app-network:
+        driver: bridge

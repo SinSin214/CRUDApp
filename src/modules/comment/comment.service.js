@@ -1,4 +1,4 @@
-const { Comment } = require("../../models");
+const Comment = require("../../models").Comment;
 module.exports = {
     create,
     update,
@@ -8,7 +8,6 @@ module.exports = {
 
 async function create(params) {
     const comment = new Comment(params);
-    Object.assign(comment, params);
     await comment.save();
 }
 
@@ -17,16 +16,16 @@ async function update(id, params) {
     if (comment.UserId !== params.UserId) {
         throw { message: "You can only update your Comment" };
     }
-    Object.assign(comment, params);
-    await comment.save();
+    const item = new Comment(params);
+    await item.save();
 }
 
 async function _delete(id, params) {
     const comment = await getComment(id);
     if (comment.UserId !== params.UserId) {
-        throw { message: "You can only update your Comment" };
+        throw { message: "You can only delete your Comment" };
     }
-    await comment.destroy();
+    await Comment.update({ Deleted: true }, { where: { id: id } });
 }
 
 async function getComment(id) {

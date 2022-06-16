@@ -1,4 +1,4 @@
-const { Article } = require("../../models");
+const Article = require("../../models").Article;
 const { Sequelize } = require("sequelize");
 module.exports = {
     getById,
@@ -33,9 +33,8 @@ async function update(id, params) {
     if (params.UserId !== article.UserId) {
         throw { message: "Cannot update Article of another User" };
     }
-
-    Object.assign(article, params);
-    await article.save();
+    const item = new Article(params);
+    await item.save();
 }
 
 async function _delete(id, params) {
@@ -44,12 +43,14 @@ async function _delete(id, params) {
         throw { message: "Cannot delete Article of another User" };
     }
 
-    await article.destroy();
+    await Article.update({ Deleted: true }, { where: { id: article.id } });
 }
 
 async function getArticle(id) {
     const item = await Article.findByPk(id);
-    if (!item) throw { message: "Article not found" };
+    if (!item) {
+        throw { message: "Article not found" };
+    }
     return item;
 }
 

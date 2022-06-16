@@ -17,7 +17,7 @@ module.exports = {
 
     _delete: function _delete(req, res, next) {
         commentService
-            .delete(req.params.id)
+            .delete(req.params.id, req.body)
             .then(() => res.json({ message: "Comment deleted" }))
             .catch(next);
     },
